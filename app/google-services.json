@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "880570689982",
+    "project_id": "fir-demo-935e4",
+    "storage_bucket": "fir-demo-935e4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:880570689982:android:d845bbbe81526fe0af71ef",
+        "android_client_info": {
+          "package_name": "com.bangvan.studytracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmF-GE1kd7q6Ud0JA4vus1Qm7y7WjVGJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

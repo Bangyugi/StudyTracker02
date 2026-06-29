@@ -5,4 +5,6 @@ plugins {
     // 2 plugin mới dành cho Pokedex
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false
+
+    id("com.google.gms.google-services") version "4.5.0" apply false
 }

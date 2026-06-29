@@ -5,16 +5,18 @@ plugins {
     // Áp dụng plugin
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.bangvan.studytracker"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.bangvan.studytracker"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -83,4 +85,9 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.5.0"))
+
+    implementation("com.google.firebase:firebase-analytics")
 }
