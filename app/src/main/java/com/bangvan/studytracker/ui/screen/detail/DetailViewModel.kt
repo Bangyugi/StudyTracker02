@@ -111,4 +111,22 @@ class DetailViewModel @Inject constructor(
         }
     }
 
+    fun deleteTask(onSuccess:() -> Unit){
+        if(currentTaskId == -1) return
+        viewModelScope.launch {
+            _isLoading.value = true
+            val task = repository.getTaskById(currentTaskId)
+            if (task != null)
+            {
+                repository.deleteTask(task)
+                Log.d(tag, "deleteTask: Successfully deleted task (ID: $currentTaskId)")
+                onSuccess()
+            }
+            else{
+                Log.w(tag, "deleteTask: Task with ID $currentTaskId was not found in the database.")
+            }
+            _isLoading.value = false
+        }
+    }
+
 }

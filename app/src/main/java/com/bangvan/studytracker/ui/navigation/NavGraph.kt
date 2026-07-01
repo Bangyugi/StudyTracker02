@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.bangvan.studytracker.ui.screen.detail.DetailScreen
 import com.bangvan.studytracker.ui.screen.home.HomeScreen
+import com.bangvan.studytracker.ui.screen.splash.SplashScreen
 
 @Composable
 fun NavGraph (
@@ -20,9 +21,15 @@ fun NavGraph (
 ){
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = Screen.Splash.route,
         modifier = modifier
     ) {
+        composable(route = Screen.Splash.route){
+            SplashScreen(
+                onNavigateToHome = {navController.navigate(Screen.Home.route)}
+            )
+        }
+
         composable(route = Screen.Home.route){
             HomeScreen(
                 onNavigateToDetail = {taskId->

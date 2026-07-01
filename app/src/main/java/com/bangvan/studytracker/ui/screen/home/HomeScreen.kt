@@ -1,5 +1,6 @@
 package com.bangvan.studytracker.ui.screen.home
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,8 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -47,6 +50,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,18 +65,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.room.Delete
 import com.bangvan.studytracker.data.local.TaskEntity
 import com.bangvan.studytracker.ui.theme.AlertRed
 import com.bangvan.studytracker.ui.theme.Background
 import com.bangvan.studytracker.ui.theme.LightLavender
 import com.bangvan.studytracker.ui.theme.Navy
 import com.bangvan.studytracker.ui.theme.Orange
+import com.bangvan.studytracker.ui.theme.Surface
 import com.bangvan.studytracker.ui.theme.TagText
 import com.bangvan.studytracker.ui.theme.TextLight
 import com.bangvan.studytracker.ui.theme.TextPrimary
 import com.bangvan.studytracker.ui.theme.TextSecondary
 import com.bangvan.studytracker.utils.conditional
 import com.bangvan.studytracker.utils.toDeadlineFormat
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,6 +90,7 @@ fun HomeScreen(
 ) {
    val tasks by viewModel.tasks.collectAsStateWithLifecycle()
    val quoteState by viewModel.quoteState.collectAsStateWithLifecycle()
+   var taskToDelete by remember { mutableStateOf<TaskEntity?>(null) }
 
    Scaffold(
       topBar = {
@@ -127,44 +137,48 @@ fun HomeScreen(
       containerColor = Background
    ) {
       innerPadding ->
-      Column(
+      LazyColumn(
          modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
+         verticalArrangement = Arrangement.spacedBy(12.dp),
+         contentPadding = PaddingValues(bottom = 16.dp)
       ) {
-         QuoteSection(quoteState = quoteState, onRefresh = { viewModel.fetchQuote() })
+         item {
+            QuoteSection(quoteState = quoteState, onRefresh = { viewModel.fetchQuote() })
 
-         Spacer(modifier = Modifier.height(20.dp))
-
-         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-         ){
-            Text(
-               text = "Upcoming Tasks",
-               fontSize = 20.sp,
-               fontWeight = FontWeight.Bold,
-               color = TextPrimary
-            )
-            TextButton(onClick = {  }) {
-               Text(
-                  text = "VIEW ALL",
-                  color = Navy,
-                  fontSize = 12.sp,
-                  fontWeight = FontWeight.Bold
-               )
-            }
+            Spacer(modifier = Modifier.height(20.dp))
          }
+         item {
+            Row(
+               modifier = Modifier.fillMaxWidth(),
+               horizontalArrangement = Arrangement.SpaceBetween,
+               verticalAlignment = Alignment.CenterVertically
+            ) {
+               Text(
+                  text = "Upcoming Tasks",
+                  fontSize = 20.sp,
+                  fontWeight = FontWeight.Bold,
+                  color = TextPrimary
+               )
+               TextButton(onClick = { }) {
+                  Text(
+                     text = "VIEW ALL",
+                     color = Navy,
+                     fontSize = 12.sp,
+                     fontWeight = FontWeight.Bold
+                  )
+               }
+            }
 
-         Spacer(modifier = Modifier.height(10.dp))
-
+            Spacer(modifier = Modifier.height(10.dp))
+         }
          if (tasks.isEmpty()) {
+            item{
             Box(
                modifier = Modifier
-                  .fillMaxWidth()
-                  .weight(1f),
+                  .fillMaxWidth(),
                contentAlignment = Alignment.Center
             ) {
                Column(
@@ -191,27 +205,34 @@ fun HomeScreen(
                }
             }
          }
-         else{
-            LazyColumn(
-               modifier = Modifier
-                  .weight(1f)
-                  .fillMaxWidth(),
-               verticalArrangement = Arrangement.spacedBy(12.dp),
-               contentPadding = PaddingValues(bottom = 16.dp)
-            ) {
-               items(
-                  items = tasks,
-                  key = { it.id }
-               ) { task ->
-                  TaskItemCard(
-                     task = task,
-                     onToggleCompletion = { viewModel.toggleTaskCompletion(task) },
-                     onClick = { onNavigateToDetail(task.id) },
-                  ) { viewModel.deleteTask(task) }
-               }
+         } else {
+            items(
+               items = tasks,
+               key = { it.id }
+            ) { task ->
+               TaskItemCard(
+                  task = task,
+                  onToggleCompletion = { viewModel.toggleTaskCompletion(task) },
+                  onClick = { onNavigateToDetail(task.id) },
+                  onDelete = {taskToDelete = task}
+               )
             }
          }
       }
+
+   taskToDelete?.let {
+      task ->
+      DeleteConfirmDialog(taskName = task.title,
+         onConfirm = {
+            viewModel.deleteTask(task)
+            taskToDelete = null
+         },
+         onDismiss = {
+            taskToDelete = null
+         }
+
+      )
+   }
    }
 
 
@@ -272,8 +293,6 @@ fun TaskItemCard (
                textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
             if (task.description.isNotEmpty()) {
                Text(
                   text = task.description,
@@ -281,7 +300,6 @@ fun TaskItemCard (
                   color = TextSecondary,
                   maxLines = 2
                )
-               Spacer(modifier = Modifier.height(8.dp))
             }
 
             Row(
@@ -318,6 +336,54 @@ fun TaskItemCard (
    }
 }
 
+@Composable
+fun DeleteConfirmDialog(
+   taskName: String,
+   onConfirm: () -> Unit,
+   onDismiss: () -> Unit,
+   modifier: Modifier = Modifier
+){
+   AlertDialog(
+      onDismissRequest = onDismiss,
+      title = {
+         Text(text ="Xác nhận xoá",
+            fontWeight = FontWeight.Bold,
+            color = TextPrimary
+         )
+      },
+      text = {
+         Text(
+            text = "Bạn có chắc chắn muốn xoá nhiệm vụ \"$taskName\" không?",
+            color = TextSecondary
+         )
+      },
+      confirmButton = {
+         TextButton(
+            onClick = onConfirm
+         ) {
+            Text(
+               text = "Xóa",
+               color = AlertRed,
+               fontWeight = FontWeight.Bold
+            )
+         }
+      },
+      dismissButton = {
+         TextButton(
+            onClick = onDismiss
+         ) {
+            Text(
+               text = "Hủy",
+               color = TextSecondary
+            )
+         }
+      },
+      containerColor = Surface,
+      shape = RoundedCornerShape(16.dp),
+      modifier = modifier
+
+   )
+}
 
 @Composable
 fun QuoteSection(

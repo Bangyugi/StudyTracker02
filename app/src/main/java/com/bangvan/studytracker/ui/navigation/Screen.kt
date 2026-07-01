@@ -7,4 +7,6 @@ sealed class Screen (val route: String){
             return "task_detail/$taskId"
         }
     }
+
+    object Splash: Screen("splash")
 }
