@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <!-- Bật/tắt tính năng quảng cáo hoặc banner -->
+    <entry>
+        <key>show_banner</key>
+        <value>false</value>
+    </entry>
+
+    <!-- Lời chào trên màn hình chính -->
+    <entry>
+        <key>welcome_message</key>
+        <value>Chào mừng bạn quay lại học tập!</value>
+    </entry>
+
+    <!-- Số phút học tập mục tiêu mặc định hàng ngày -->
+    <entry>
+        <key>daily_study_goal_minutes</key>
+        <value>60</value>
+    </entry>
+</defaultsMap>

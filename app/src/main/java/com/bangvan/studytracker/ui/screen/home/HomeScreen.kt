@@ -43,6 +43,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -91,6 +92,8 @@ fun HomeScreen(
    val tasks by viewModel.tasks.collectAsStateWithLifecycle()
    val quoteState by viewModel.quoteState.collectAsStateWithLifecycle()
    var taskToDelete by remember { mutableStateOf<TaskEntity?>(null) }
+   val showBanner by viewModel.showBanner.collectAsStateWithLifecycle()
+   val welcomeMessage by viewModel.welcomeMessage.collectAsStateWithLifecycle()
 
    Scaffold(
       topBar = {
@@ -151,25 +154,34 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(20.dp))
          }
          item {
-            Row(
-               modifier = Modifier.fillMaxWidth(),
-               horizontalArrangement = Arrangement.SpaceBetween,
-               verticalAlignment = Alignment.CenterVertically
-            ) {
-               Text(
-                  text = "Upcoming Tasks",
-                  fontSize = 20.sp,
-                  fontWeight = FontWeight.Bold,
-                  color = TextPrimary
-               )
-               TextButton(onClick = { }) {
-                  Text(
-                     text = "VIEW ALL",
-                     color = Navy,
-                     fontSize = 12.sp,
-                     fontWeight = FontWeight.Bold
-                  )
+            Column( modifier = Modifier.fillMaxSize()) {
+
+               if(showBanner){
+                  Banner(message = welcomeMessage)
+                  Spacer(modifier = Modifier.height(10.dp))
                }
+
+               Row(
+                  modifier = Modifier.fillMaxWidth(),
+                  horizontalArrangement = Arrangement.SpaceBetween,
+                  verticalAlignment = Alignment.CenterVertically
+               ) {
+                  Text(
+                     text = "Upcoming Tasks",
+                     fontSize = 20.sp,
+                     fontWeight = FontWeight.Bold,
+                     color = TextPrimary
+                  )
+                  TextButton(onClick = { }) {
+                     Text(
+                        text = "VIEW ALL",
+                        color = Navy,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                     )
+                  }
+               }
+
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -525,4 +537,15 @@ fun BottomNavigationBar(){
          }
       }
    }
+}
+
+@Composable
+fun Banner(message: String) {
+
+      Text(
+         text = message,
+         style = MaterialTheme.typography.bodyLarge,
+         color = MaterialTheme.colorScheme.onPrimaryContainer
+      )
+
 }

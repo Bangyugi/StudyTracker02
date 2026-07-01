@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangvan.studytracker.data.local.TaskEntity
 import com.bangvan.studytracker.data.remote.QuoteResponse
+import com.bangvan.studytracker.data.repository.RemoteConfigRepository
 import com.bangvan.studytracker.data.repository.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,13 +26,20 @@ sealed interface QuoteUiState {
 }
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: TaskRepository
+    private val repository: TaskRepository,
+    private val remoteConfigRepository: RemoteConfigRepository
 ): ViewModel() {
     private val tag = "StudyTrackerLog"
 
     private val _quoteState = MutableStateFlow<QuoteUiState>(QuoteUiState.Loading)
 
     val quoteState: StateFlow<QuoteUiState> = _quoteState.asStateFlow()
+
+    private val _showBanner = MutableStateFlow(false)
+    val showBanner: StateFlow<Boolean> = _showBanner.asStateFlow()
+
+    private val _welcomeMessage = MutableStateFlow("")
+    val welcomeMessage: StateFlow<String> = _welcomeMessage.asStateFlow()
 
     val tasks: StateFlow<List<TaskEntity>> = repository.getAllTasks()
         .onEach { list -> Log.d(tag,"Task updated: Loaded ${list.size} tasks from local database") }
@@ -42,6 +50,24 @@ class HomeViewModel @Inject constructor(
     init {
         Log.d(tag, "HomeViewModel initialized.")
         fetchQuote()
+
+        loadCachedValues()
+
+        fetchRemoteConfig()
+
+    }
+
+    private fun loadCachedValues(){
+        _showBanner.value =  remoteConfigRepository.getBoolean("show_banner")
+        _welcomeMessage.value = remoteConfigRepository.getString("welcome_message")
+    }
+
+    private fun fetchRemoteConfig(){
+        remoteConfigRepository.fetchAndActivate { isSuccessful ->
+            if (isSuccessful){
+                loadCachedValues()
+            }
+        }
     }
 
     fun fetchQuote(){
