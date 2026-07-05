@@ -101,4 +101,6 @@ dependencies {
     implementation("com.google.firebase:firebase-perf")
 
     implementation("com.google.firebase:firebase-messaging")
+
+    implementation("androidx.appcompat:appcompat:1.6.1")
 }

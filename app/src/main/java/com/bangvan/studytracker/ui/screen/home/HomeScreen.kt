@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -56,6 +57,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
@@ -67,6 +69,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.room.Delete
+import com.bangvan.studytracker.R
 import com.bangvan.studytracker.data.local.TaskEntity
 import com.bangvan.studytracker.ui.theme.AlertRed
 import com.bangvan.studytracker.ui.theme.Background
@@ -87,6 +90,7 @@ import com.bangvan.studytracker.utils.toDeadlineFormat
 @Composable
 fun HomeScreen(
    onNavigateToDetail: (Int) -> Unit,
+   onNavigateToSettings: () -> Unit,
    viewModel: HomeViewModel = hiltViewModel()
 ) {
    val tasks by viewModel.tasks.collectAsStateWithLifecycle()
@@ -119,7 +123,7 @@ fun HomeScreen(
          )
       },
       bottomBar = {
-         BottomNavigationBar()
+         BottomNavigationBar(onNavigateToSettings)
       },
       floatingActionButton = {
          FloatingActionButton(
@@ -167,14 +171,14 @@ fun HomeScreen(
                   verticalAlignment = Alignment.CenterVertically
                ) {
                   Text(
-                     text = "Upcoming Tasks",
+                     text = stringResource(id = R.string.upcoming_tasks),
                      fontSize = 20.sp,
                      fontWeight = FontWeight.Bold,
                      color = TextPrimary
                   )
                   TextButton(onClick = { }) {
                      Text(
-                        text = "VIEW ALL",
+                        text = stringResource(id = R.string.view_all),
                         color = Navy,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
@@ -203,17 +207,17 @@ fun HomeScreen(
                      modifier = Modifier.size(64.dp)
                   )
                   Spacer(modifier = Modifier.height(12.dp))
-                  Text(
-                     text = "Không có nhiệm vụ nào sắp tới!",
-                     color = TextSecondary,
-                     fontSize = 15.sp,
-                     fontWeight = FontWeight.Medium
-                  )
-                  Text(
-                     text = "Bấm nút + để tạo mới nhé.",
-                     color = TextLight,
-                     fontSize = 13.sp
-                  )
+                   Text(
+                      text = stringResource(id = R.string.no_tasks),
+                      color = TextSecondary,
+                      fontSize = 15.sp,
+                      fontWeight = FontWeight.Medium
+                   )
+                   Text(
+                      text = stringResource(id = R.string.create_task_tip),
+                      color = TextLight,
+                      fontSize = 13.sp
+                   )
                }
             }
          }
@@ -474,7 +478,7 @@ fun QuoteSection(
 }
 
 @Composable
-fun BottomNavigationBar(){
+fun BottomNavigationBar(onNavigateToSettings: () -> Unit){
    Surface(
       color = Color.White,
       tonalElevation = 8.dp,
@@ -493,14 +497,17 @@ fun BottomNavigationBar(){
             Triple("Dashboard", Icons.Default.Home,true),
             Triple("Tasks", Icons.Default.List,false),
             Triple("Timer", Icons.Default.Refresh,false),
-            Triple("Profile", Icons.Default.Person,false),
+            Triple("Settings", Icons.Default.Settings, false),
          )
 
          items.forEach { (label,icon,isSelected) ->
             Box(
                modifier = Modifier.weight(1f)
                   .clip(RoundedCornerShape(16.dp))
-                  .clickable{}
+                  .clickable{ if (label == "Settings") {
+                     onNavigateToSettings()
+                  }
+                  }
                   .padding(vertical = 4.dp),
                contentAlignment = Alignment.Center
             ){
