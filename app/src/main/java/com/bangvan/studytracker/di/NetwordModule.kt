@@ -13,9 +13,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn (SingletonComponent ::class)
 
-object NetwordModule {
+object NetworkModule {
 
-    private const val BASE_URL = "https://zenquotes.io/api/"
+    private const val BASE_URL = UrlConfig.BASE_URL
 
     @Provides
     @Singleton

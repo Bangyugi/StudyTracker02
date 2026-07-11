@@ -26,5 +26,5 @@ class TaskRepository @Inject constructor(
 
     suspend fun deleteTask(task: TaskEntity) = taskDao.deleteTask(task)
 
-    suspend fun getRandomQuote(): List<QuoteResponse> = quoteApiService.getRandomQuote(BuildConfig.QUOTE_API_URL)
+    suspend fun getRandomQuote(): List<QuoteResponse> = quoteApiService.getRandomQuote()
 }
