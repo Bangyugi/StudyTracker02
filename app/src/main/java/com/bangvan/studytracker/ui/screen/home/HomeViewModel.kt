@@ -78,6 +78,7 @@ class HomeViewModel @Inject constructor(
                _quoteState.value = QuoteUiState.Success(quote[0] )
            } catch (e: Exception)
            {
+               android.util.Log.e("StudyTrackerLog", "Lỗi tải quote", e)
                _quoteState.value = QuoteUiState.Error(e.message ?: "Unknown")
            }
 

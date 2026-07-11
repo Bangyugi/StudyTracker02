@@ -1,8 +1,10 @@
 package com.bangvan.studytracker.data.remote
 
 import retrofit2.http.GET
+import retrofit2.http.Url
 
 interface QuoteApiService {
-    @GET("random")
-    suspend fun getRandomQuote():   List<QuoteResponse>
+
+    @GET
+    suspend fun getRandomQuote(@Url url: String):   List<QuoteResponse>
 }

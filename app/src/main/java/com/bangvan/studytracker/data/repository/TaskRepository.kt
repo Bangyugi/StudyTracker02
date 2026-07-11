@@ -1,5 +1,6 @@
 package com.bangvan.studytracker.data.repository
 
+import com.bangvan.studytracker.BuildConfig
 import com.bangvan.studytracker.data.local.TaskDao
 import com.bangvan.studytracker.data.local.TaskEntity
 import com.bangvan.studytracker.data.remote.QuoteResponse
@@ -25,5 +26,5 @@ class TaskRepository @Inject constructor(
 
     suspend fun deleteTask(task: TaskEntity) = taskDao.deleteTask(task)
 
-    suspend fun getRandomQuote(): List<QuoteResponse> = quoteApiService.getRandomQuote()
+    suspend fun getRandomQuote(): List<QuoteResponse> = quoteApiService.getRandomQuote(BuildConfig.QUOTE_API_URL)
 }
