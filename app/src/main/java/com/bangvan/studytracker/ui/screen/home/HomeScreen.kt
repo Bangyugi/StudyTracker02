@@ -71,6 +71,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.room.Delete
 import com.bangvan.studytracker.R
 import com.bangvan.studytracker.data.local.TaskEntity
+import com.bangvan.studytracker.ui.component.BannerAdView
 import com.bangvan.studytracker.ui.theme.AlertRed
 import com.bangvan.studytracker.ui.theme.Background
 import com.bangvan.studytracker.ui.theme.LightLavender
@@ -123,7 +124,10 @@ fun HomeScreen(
          )
       },
       bottomBar = {
-         BottomNavigationBar(onNavigateToSettings)
+         Column {
+            BannerAdView()
+            BottomNavigationBar(onNavigateToSettings)
+         }
       },
       floatingActionButton = {
          FloatingActionButton(
