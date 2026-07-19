@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.bangvan.studytracker.ui.navigation.NavGraph
 import com.bangvan.studytracker.ui.theme.StudyTrackerTheme
 import com.google.firebase.messaging.FirebaseMessaging
+import com.bangvan.studytracker.ads.OnShowAdCompleteListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,8 +42,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        var keepSplashScreen = true
+        splashScreen.setKeepOnScreenCondition {
+            keepSplashScreen
+        }
+
+        val appClass = application as StudytrackerApp
+        appClass.appOpenAdManager.showAdIfAvailable(this, object : OnShowAdCompleteListener {
+            override fun onShowAdComplete() {
+                keepSplashScreen = false
+            }
+        })
 
         enableEdgeToEdge()
         setContent {

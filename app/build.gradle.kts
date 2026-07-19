@@ -130,4 +130,6 @@ dependencies {
     implementation("androidx.glance:glance-material3:1.1.0")
 
     implementation(libs.google.ads.mobile)
+
+    implementation(libs.androidx.lifecycle.process)
 }

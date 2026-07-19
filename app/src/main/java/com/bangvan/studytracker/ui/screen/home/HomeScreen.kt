@@ -28,12 +28,10 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -68,10 +66,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.room.Delete
 import com.bangvan.studytracker.R
 import com.bangvan.studytracker.data.local.TaskEntity
-import com.bangvan.studytracker.ui.component.BannerAdView
+import com.bangvan.studytracker.ads.BannerAdView
 import com.bangvan.studytracker.ui.theme.AlertRed
 import com.bangvan.studytracker.ui.theme.Background
 import com.bangvan.studytracker.ui.theme.LightLavender

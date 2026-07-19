@@ -1,7 +1,10 @@
 package com.bangvan.studytracker.ui.screen.detail
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -103,6 +106,12 @@ fun DetailScreen(
 
     var showMenu by remember { mutableStateOf(false) }
 
+    val adManager = remember { com.bangvan.studytracker.ads.RewardedInterstitialAdManager(context) }
+
+    LaunchedEffect(Unit) {
+        adManager.loadAd()
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -143,11 +152,11 @@ fun DetailScreen(
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Delete",
-                                    tint = Color.Red // Màu đỏ cảnh báo xóa
+                                    tint = Color.Red
                                 )
                             },
                             onClick = {
-                                showMenu = false
+                                   showMenu = false
                                 viewModel.deleteTask {
                                     onNavigateBack()
                                 }
@@ -410,9 +419,31 @@ fun DetailScreen(
 
                             Button(
                                 onClick = {
-                                    viewModel.saveTask {
-                                        onNavigateBack()
+                                    val activity = context.findActivity()
+                                    if (activity != null && adManager.isAdAvailable()) {
+                                        adManager.showAd(
+                                            activity = activity,
+                                            onRewardEarned = {
+                                                viewModel.saveTask {
+                                                    onNavigateBack()
+                                                }
+                                            },
+                                            onAdClosedWithoutReward = {
+                                                onNavigateBack()
+                                            },
+                                            onAdFailedToShow = {
+                                                viewModel.saveTask {
+                                                    onNavigateBack()
+                                                }
+                                            }
+                                        )
+                                    }else {
+
+                                        viewModel.saveTask {
+                                            onNavigateBack()
+                                        }
                                     }
+
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -453,3 +484,8 @@ fun DetailScreen(
 }
 
 
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}

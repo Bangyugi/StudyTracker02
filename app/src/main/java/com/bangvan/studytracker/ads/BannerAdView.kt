@@ -1,4 +1,4 @@
-package com.bangvan.studytracker.ui.component
+package com.bangvan.studytracker.ads
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
